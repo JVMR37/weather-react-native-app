@@ -42,13 +42,14 @@ const styles = StyleSheet.create({
 
   textPrimary: {
     fontSize: 40,
+    fontWeight: 'bold',
     color: PRIMARY_COLOR,
   },
 
   textSecondary: {
     fontSize: 20,
     color: SECONDARY_COLOR,
-    fontWeight: '700',
+    fontWeight: "700",
     marginTop: 10,
   },
 });

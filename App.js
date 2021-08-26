@@ -2,6 +2,8 @@ import { StatusBar } from "expo-status-bar";
 import React, { useDebugValue, useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import * as Location from "expo-location";
+import WeatherInfos from "./components/WeatherInfos";
+import UnitsPicker from "./components/UnitsPicker";
 
 const WEATHER_API_KEY = "989da125065b3b47af4b571daf881744";
 const BASE_WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather?";
@@ -9,13 +11,15 @@ const BASE_WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather?";
 export default function App() {
   const [errorMessage, setErrorMessage] = useState(null);
   const [currentWeather, setCurrentWeather] = useState(null);
+  const [unitsSystem, setUnitsSystem] = useState("metric");
 
   useEffect(() => {
     console.log("Use Effect");
     load();
-  }, []);
+  }, [unitsSystem]);
 
   async function load() {
+    setCurrentWeather(null);
     try {
       let { status } = await Location.requestForegroundPermissionsAsync();
 
@@ -27,7 +31,7 @@ export default function App() {
 
       const { latitude, longitude } = location.coords;
 
-      const weatherURL = `${BASE_WEATHER_URL}lat=${latitude}&lon=${longitude}&appid=${WEATHER_API_KEY}`;
+      const weatherURL = `${BASE_WEATHER_URL}lat=${latitude}&lon=${longitude}&units=${unitsSystem}&appid=${WEATHER_API_KEY}`;
 
       const response = await fetch(weatherURL);
 
@@ -40,7 +44,7 @@ export default function App() {
         setErrorMessage(result.message);
       }
     } catch (error) {
-      setErrorMessage(error);
+      setErrorMessage(error.message);
     }
   }
 
@@ -50,8 +54,14 @@ export default function App() {
     } = currentWeather;
     return (
       <View style={styles.container}>
-        <Text>{temp}</Text>
         <StatusBar style="auto" />
+        <View style={styles.main}>
+          <UnitsPicker
+            unitsSystem={unitsSystem}
+            setUnitsSystem={setUnitsSystem}
+          />
+          <WeatherInfos currentWeather={currentWeather} />
+        </View>
       </View>
     );
   } else {
@@ -69,6 +79,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
+    justifyContent: "center",
+  },
+  main: {
+    flex: 1,
     justifyContent: "center",
   },
 });

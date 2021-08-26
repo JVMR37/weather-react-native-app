@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
 
   textPrimary: {
     fontSize: 40,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: PRIMARY_COLOR,
   },
 

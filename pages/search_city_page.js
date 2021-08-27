@@ -1,38 +1,123 @@
 import { OPENCAGE_API_KEY } from "@env";
 
-import React, { useState } from "react";
+import * as Location from "expo-location";
+
+import React, { useState, useCallback } from "react";
 import { View, Text, StyleSheet, StatusBar } from "react-native";
 import { TextInput, Button } from "react-native-paper";
 
 import { MaterialIcons } from "@expo/vector-icons";
 
+import PreviousSearch from "../components/PreviousSearch";
+
+const BASE_OPENCAGE_URL = "https://api.opencagedata.com/geocode/v1/json?";
+
 const SearchCityPage = () => {
-  const [text, setText] = React.useState("");
+  const [searchText, setSearchText] = useState("");
+
+  const searchByLocationButtonHandler = useCallback(async () => {
+    try {
+      const location = await Location.getCurrentPositionAsync();
+
+      const { latitude, longitude } = location.coords;
+
+      const opencageUrl = `${BASE_OPENCAGE_URL}key=${OPENCAGE_API_KEY}&q=${latitude}+${longitude}&pretty=1&language=pt-BR`;
+
+      console.log("========================");
+      console.log(opencageUrl);
+      console.log("========================");
+
+      const response = await fetch(opencageUrl);
+
+      const result = await response.json();
+
+      console.log(result);
+
+      if (response.ok) {
+        console.log(result.results[0].components.city);
+        console.log(result.results[0].components.country);
+        console.log(result.results[0].components.state_code);
+      } else {
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  }, []);
+
+  const submitButtonHandler = useCallback(async () => {
+    try {
+      const opencageUrl = `${BASE_OPENCAGE_URL}key=${OPENCAGE_API_KEY}&q=${searchText}&pretty=1&language=pt-BR`;
+
+      console.log("========================");
+      console.log(opencageUrl);
+      console.log("========================");
+
+      const response = await fetch(opencageUrl);
+
+      const result = await response.json();
+
+      console.log(result);
+
+      if (response.ok) {
+        console.log(result.results[0].components.city);
+        console.log(result.results[0].components.country);
+        console.log(result.results[0].components.state_code);
+      } else {
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  }, [searchText]);
 
   return (
     <View style={styles.container}>
-      <Text>Type your location here:</Text>
+      <Text
+        style={{
+          fontSize: 18,
+          fontWeight: "700",
+        }}
+      >
+        Type your location here:
+      </Text>
       <TextInput
-        value={text}
+        value={searchText}
+        style={styles.textInput}
         selectionColor="red"
         mode="outlined"
-        onChangeText={(text) => setText(text)}
+        onChangeText={setSearchText}
       ></TextInput>
       <View style={styles.buttonsRow}>
         <Button
           mode="contained"
           style={styles.button}
           uppercase={false}
-          onPress={() => {}}
+          onPress={submitButtonHandler}
         >
-          <Text style={styles.text}>Submit</Text>
+          <Text>Submit</Text>
         </Button>
 
-        <Button mode="contained" style={styles.button} onPress={() => {}}>
-          <MaterialIcons name="my-location" size={24} color="black" />
+        <Button
+          mode="contained"
+          style={styles.button}
+          onPress={searchByLocationButtonHandler}
+        >
+          <MaterialIcons name="my-location" size={24} color="white" />
         </Button>
       </View>
-      <Text>Previous Searches</Text>
+      <Text
+        style={{
+          fontSize: 22,
+          fontWeight: "bold",
+          marginBottom: 10,
+          marginTop: 10,
+        }}
+      >
+        Previous Searches
+      </Text>
+      <PreviousSearch
+        cityName={"Aloha"}
+        locationInfos={"Rua dos bobos, número 0"}
+      />
     </View>
   );
 };
@@ -45,12 +130,6 @@ const styles = StyleSheet.create({
     paddingTop: StatusBar.currentHeight,
     padding: 8,
   },
-  touchable: {
-    borderColor: "black",
-    borderWidth: 1,
-    backgroundColor: "#ff1744",
-  },
-  text: { alignSelf: "center" },
   buttonsRow: {
     display: "flex",
     flexDirection: "row",
@@ -59,13 +138,10 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   textInput: {
-    color: "red",
+    marginTop: 15,
   },
   button: {
-    backgroundColor: "#ff1744",
-    borderRadius: 15,
     minWidth: 125,
-    //   border: "1px solid black"
   },
 });
 

@@ -9,10 +9,15 @@ import { TextInput, Button } from "react-native-paper";
 import { MaterialIcons } from "@expo/vector-icons";
 
 import PreviousSearch from "../components/PreviousSearch";
+import { useSelector, useDispatch } from "react-redux";
+
+import { addNewSearch } from "../stores/searchSlice";
 
 const BASE_OPENCAGE_URL = "https://api.opencagedata.com/geocode/v1/json?";
 
 const SearchCityPage = () => {
+  const dispatch = useDispatch();
+  const searchs = useSelector((state) => state.search.value);
   const [searchText, setSearchText] = useState("");
 
   const searchByLocationButtonHandler = useCallback(async () => {
@@ -34,11 +39,16 @@ const SearchCityPage = () => {
       console.log(result);
 
       if (response.ok) {
-        console.log(result.results[0].components.city);
-        console.log(result.results[0].components.country);
-        console.log(result.results[0].components.state_code);
-      } else {
-      }
+        dispatch(
+          addNewSearch({
+            city: result.results[0].components.city,
+            location:
+              result.results[0].components.state_code +
+              ", " +
+              result.results[0].components.country,
+          })
+        );
+      } else throw result;
     } catch (error) {
       console.log(error.message);
     }
@@ -59,11 +69,16 @@ const SearchCityPage = () => {
       console.log(result);
 
       if (response.ok) {
-        console.log(result.results[0].components.city);
-        console.log(result.results[0].components.country);
-        console.log(result.results[0].components.state_code);
-      } else {
-      }
+        dispatch(
+          addNewSearch({
+            city: result.results[0].components.city,
+            location:
+              result.results[0].components.state_code +
+              ", " +
+              result.results[0].components.country,
+          })
+        );
+      } else throw result;
     } catch (error) {
       console.log(error.message);
     }
@@ -114,10 +129,14 @@ const SearchCityPage = () => {
       >
         Previous Searches
       </Text>
-      <PreviousSearch
-        cityName={"Aloha"}
-        locationInfos={"Rua dos bobos, número 0"}
-      />
+      {searchs.length > 0 &&
+        searchs.map((search, index) => (
+          <PreviousSearch
+            key={index}
+            cityName={search.city}
+            locationInfos={search.location}
+          />
+        ))}
     </View>
   );
 };

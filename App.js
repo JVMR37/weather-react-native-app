@@ -10,7 +10,7 @@ const Stack = createNativeStackNavigator();
 
 const theme = {
   ...DefaultTheme,
-  roundness: 2,
+  roundness: 15,
   colors: {
     ...DefaultTheme.colors,
     primary: "#ff304f",

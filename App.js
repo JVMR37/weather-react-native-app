@@ -6,6 +6,9 @@ import { Provider as PaperProvider, DefaultTheme } from "react-native-paper";
 import WeatherPage from "./pages/weather_page";
 import SearchCityPage from "./pages/search_city_page";
 
+import { store } from "./stores/index";
+import { Provider } from "react-redux";
+
 const Stack = createNativeStackNavigator();
 
 const theme = {
@@ -20,25 +23,27 @@ const theme = {
 
 export default function App() {
   return (
-    <PaperProvider theme={theme}>
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="SearchPage">
-          <Stack.Screen
-            name="WeatherPage"
-            component={WeatherPage}
-            options={{
-              title: "Weather",
-            }}
-          />
-          <Stack.Screen
-            name="SearchPage"
-            component={SearchCityPage}
-            options={{
-              title: "Search",
-            }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </PaperProvider>
+    <Provider store={store}>
+      <PaperProvider theme={theme}>
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="WeatherPage">
+            <Stack.Screen
+              name="WeatherPage"
+              component={WeatherPage}
+              options={{
+                title: "Weather",
+              }}
+            />
+            <Stack.Screen
+              name="SearchPage"
+              component={SearchCityPage}
+              options={{
+                title: "Search",
+              }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </PaperProvider>
+    </Provider>
   );
 }

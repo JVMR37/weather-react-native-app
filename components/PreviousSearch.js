@@ -32,8 +32,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#D3D3D3",
     padding: 10,
     borderRadius: 15,
-    marginBottom: 15,
-    marginTop: 15,
+    marginBottom: 10,
+    marginTop: 10,
   },
   locationRow: {
     display: "flex",

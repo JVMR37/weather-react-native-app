@@ -1,12 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  ActivityIndicator,
-  Button,
-} from "react-native";
+import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
+import { Button } from "react-native-paper";
 import * as Location from "expo-location";
 import WeatherInfos from "../components/WeatherInfos";
 import UnitsPicker from "../components/UnitsPicker";
@@ -73,9 +68,13 @@ const WeatherPage = ({ navigation }) => {
           <WeatherInfos currentWeather={currentWeather} />
         </View>
         <Button
-          title="Go to Details"
+          mode="contained"
+          color={colors.PRIMARY_COLOR}
+          style={{ marginBottom: 15, marginTop: 10 }}
           onPress={() => navigation.navigate("SearchPage")}
-        />
+        >
+          <Text>Go to Search Page</Text>
+        </Button>
         <WeatherDetails
           currentWeather={currentWeather}
           unitsSystem={unitsSystem}
